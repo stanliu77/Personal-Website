@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typer Ahead</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background-color: #ffc600;
+            font-family: 'helvetica neue';
+            font-weight: 200;
+            font-size: 20px;
+            box-sizing: border-box;
+        }
+
+        input {
+            width: 80vw;
+            padding: 20px;
+        }
+
+        .search {
+            margin: 0;
+            outline: 0;
+            text-align: center;
+            border: 10px solid #F7F7F7;
+            position: relative;
+            border-radius: 5px;
+            font-size: 40px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.12);
+            top: 10px;
+            z-index: 2;
+        }
+
+        .box {
+            width: 100%;
+            margin: 50px auto;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .suggestions {
+            margin: 0;
+            padding: 0;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .suggestions li {
+            background: white;
+            list-style: none;
+            text-align: center;
+            width: 60vw;
+            border-bottom: 1px solid #D8D8D8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            text-transform: capitalize;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+            transition: background 0.2s;
+        }
+
+        .suggestions li:nth-child(odd) {
+            transform: perspective(100px) rotateX(-3deg) translateY(2px) scale(1.001);
+            background: linear-gradient(to bottom, #ffffff 0%, #EFEFEF 100%);
+        }
+
+        .suggestions li:nth-child(even) {
+            transform: perspective(100px) rotateX(3deg) translateY(3px);
+            background: linear-gradient(to top, #ffffff 0%, #EFEFEF 100%);
+        }
+        .h1{
+            background: #ffc600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <input type="text" placeholder="City or State" class="search">
+        <ul class="suggestions">
+            <li>Filter for a city</li>
+            <li>or a state</li>
+        </ul>
+    </div>
+    <script>
+        const endpoint = 'http://localhost:5000/data';
+
+        city = []
+        fetch(endpoint)
+            .then(data => data.json())
+            .then(data => {
+                city.push(...data)
+                const search = document.querySelector(".search")
+                search.addEventListener("input", handleDisplay)
+            }).catch(console.error)
+        function handleInput(word) {
+            return city.filter(item => {
+                const reg = new RegExp(word, "gi")
+                return item.city.match(reg) || item.state.match(reg)
+            })
+        }
+
+        function handleDisplay() {
+            let html
+            if(!this.value){
+                html =`<li>Filter for a city</li>
+            <li>or a state</li>`
+            }else{
+                const match = handleInput(this.value)
+                html = match.map(item => {
+                const reg = new RegExp(this.value, "gi")
+                const cityName = item.city.replace(reg, `<span class="h1">${this.value}</span>`)
+                const stateName = item.state.replace(reg, `<span class="h1">${this.value}</span>`)
+                return `<li>
+                    <span class="name">${cityName}, ${stateName}</span>
+                    <span class="population">${numberWithCommas(item.population)}</span>
+                </li>`
+            }).join("")
+            }
+            suggestions.innerHTML = html
+        }
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        const suggestions = document.querySelector(".suggestions")
+        
+    </script>
+</body>
+
+</html>

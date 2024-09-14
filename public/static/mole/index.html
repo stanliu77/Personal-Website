@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack A Mole Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background: #ffc660;
+            font-size: 80px;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        .box {
+            margin: 30px auto;
+            width: 100vw;
+            line-height: 1;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .score {
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0 30px;
+        }
+
+        .hole {
+            flex: 1 0 33.33%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game {
+            width: 600px;
+            height: 400px;
+            display: flex;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .hole:after {
+            display: block;
+            background: url(./dirt.svg) bottom center no-repeat;
+            background-size: contain;
+            content: "";
+            width: 100%;
+            height: 70px;
+            position: absolute;
+            z-index: 2;
+            bottom: -30px;
+        }
+
+        .mole {
+            background: url('mole.svg') bottom center no-repeat;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-size: 60%;
+            transition: all 0.4s;
+            top: 100%;
+        }
+
+        .hole.up .mole {
+            top: 0
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <span class="caption">Whack A Mole! </span><span class="score">0</span>
+    </div>
+    <button onclick="startGame()">Start!</button>
+    <div class="game">
+        <div class="hole hole1">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole2">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole3">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole5">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole5">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole6">
+            <div class="mole"></div>
+        </div>
+        <audio class="music" src="./tom.wav">
+    </div>
+    <script>
+        let lastHole
+        let score
+        let timeUp
+        const holes = document.querySelectorAll(".hole")
+        const scoreBoard = document.querySelector(".score")
+        const moles = document.querySelectorAll(".mole")
+        const music = document.querySelector(".music")
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min)
+        }
+        function randomHole(holes) {
+            const num = Math.floor(Math.random() * holes.length)
+            const hole = holes[num]
+            if (hole === lastHole) {
+                return randomHole(holes)
+            }
+            lastHole = hole
+            return hole
+        }
+        function peep() {
+            const time = randomTime(200, 1000)
+            const hole = randomHole(holes)
+            hole.classList.add("up")
+            setTimeout(() => {
+                hole.classList.remove("up")
+                if (!timeUp) peep()
+            }, time)
+
+        }
+        function startGame() {
+            scoreBoard.textContent = 0
+            timeUp = false
+            score = 0
+            peep()
+            setTimeout(() => timeUp = true, 10000)
+        }
+        function bonk(e) {
+            if (!e.isTrusted) return
+            music.currentTime = 0
+            music.play()
+            score++
+            this.parentNode.classList.remove("up")
+            scoreBoard.textContent = score
+        }
+        moles.forEach(mole => mole.addEventListener("click", bonk))
+
+    </script>
+</body>
+
+</html>
