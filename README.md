@@ -7,6 +7,15 @@ Welcome to the repository for my personal portfolio website. This website is des
 - **Interactive Projects Section**: Explore a variety of my past and ongoing projects. Each project is detailed on its own page with interactive elements.
 - **About Me**: Detailed information about my educational and professional background.
 - **Contact Form**: A simple way for visitors to contact me directly from the website.
+- 
+### Home Page
+![Home Page](https://github.com/stanliu77/Personal-Website/blob/master/public/static/images/home.jpg)
+
+### Projects Section
+![Projects Section](https://github.com/stanliu77/Personal-Website/blob/master/public/static/images/projects.jpg)
+
+### About Me
+![About Me](https://github.com/stanliu77/Personal-Website/blob/master/public/static/images/info.jpg)
 
 ## Installation
 
